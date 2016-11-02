@@ -1,16 +1,17 @@
 import angular from 'angular';
 import CategoryItemModule from './category-item/category-item';
 
-import { categories, GET_CATEGORIES, category, GET_CURRENT_CATEGORY} from './categories.state.js';
+import { category, CategoriesActions} from './categories.state.js';
 
 import template from './categories.html';
 import './categories.css';
 
 class CategoriesController {
-  constructor(store) {
+  constructor(store, CategoriesActions) {
     'ngInject';
 
     this.store = store;
+    this.CategoriesActions = CategoriesActions;
   }
 
   $onInit() {
@@ -19,13 +20,13 @@ class CategoriesController {
       this.categories = this.store.getState();
     });
     // state setter
-    this.store.dispatch({type: GET_CATEGORIES});
+    this.store.dispatch(
+      this.CategoriesActions.getCategories());
   }
 
   onCategorySelected(currentCategory) {
     this.currentCategory = category (this.currentCategory,
-      {type: GET_CURRENT_CATEGORY, payload: currentCategory}
-    );
+      this.CategoriesActions.selectCategory(currentCategory));
   }
 
   isCurrentCategory(category) {
@@ -33,7 +34,7 @@ class CategoriesController {
       this.currentCategory.id === category.id;
   }
 }
-CategoriesController.$inject = ['store'];
+CategoriesController.$inject = ['store', 'CategoriesActions'];
 const CategoriesComponent = {
   template,
   controller: CategoriesController,
@@ -43,6 +44,7 @@ const CategoriesComponent = {
 const CategoriesModule = angular.module('categories', [
       CategoryItemModule.name
     ])
+    .factory('CategoriesActions', CategoriesActions)
     .component('categories', CategoriesComponent)
   ;
 
