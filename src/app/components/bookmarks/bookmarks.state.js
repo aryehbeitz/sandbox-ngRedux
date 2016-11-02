@@ -76,16 +76,11 @@ export const bookmarks = (state = initialBookmarks, {type, payload}) => {
     case GET_BOOKMARKS:
       return payload || state;
     case CREATE_BOOKMARK:
-      state.push(payload);
-      return state;
+      return [...state, payload];
     case UPDATE_BOOKMARK:
-      const index = state.findIndex(b => b.id === payload.id);
-      state[index] = payload;
-      return state;
+      return state.map(bookmark => bookmark.id === payload.id ? payload : bookmark);
     case DELETE_BOOKMARK:
-      const indexD = state.findIndex(b => b.id === payload.id);
-      state.splice(indexD, 1);
-      return state;
+      return state.filter(bookmark => bookmark.id !== payload.id);
     default:
       return state;
   }
