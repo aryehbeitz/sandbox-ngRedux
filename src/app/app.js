@@ -8,7 +8,7 @@ import ComponentsModule from './components/components';
 
 import ngRedux from 'ng-redux';
 import { categories, category} from './components/categories/categories.state';
-import { bookmarks } from './components/bookmarks/bookmarks.state';
+import { bookmarks, bookmark } from './components/bookmarks/bookmarks.state';
 import { combineReducers } from 'redux';
 
 import template from './app.html';
@@ -17,7 +17,8 @@ import './app.css';
 const rootReducer = combineReducers({
   categories,
   category,
-  bookmarks
+  bookmarks,
+  bookmark
 });
 
 const config = $ngReduxProvider => {

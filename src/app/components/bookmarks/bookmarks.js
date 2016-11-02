@@ -7,61 +7,49 @@ import template from './bookmarks.html';
 import './bookmarks.css';
 
 class BookmarksController {
-  constructor($ngRedux, BookmarksModel, BookmarksActions) {
+  constructor($ngRedux, BookmarksActions) {
     'ngInject';
 
     this.store = $ngRedux;
     this.BookmarksActions = BookmarksActions;
-    this.BookmarksModel = BookmarksModel;
   }
 
   $onInit() {
-    this.deleteBookmark = this.BookmarksModel.deleteBookmark;
-
     this.store.subscribe(() => {
       this.bookmarks = this.store.getState().bookmarks;
+      this.currentBookmark = this.store.getState().bookmark;
       this.currentCategory = this.store.getState().category;
     });
 
-    this.store.dispatch(this.BookmarksActions.getBookmarks());
+    this.store.dispatch(
+      this.BookmarksActions.getBookmarks()
+    );
   }
 
-  createBookmark() {
-    this.currentBookmark = this.initNewBookmark();
+  saveBookmark(bookmark) {}
+
+  deleteBookmark(bookmark) {}
+
+  selectBookmark(bookmark) {
+    this.store.dispatch(
+      this.BookmarksActions.selectBookmark(bookmark)
+    );
   }
 
-  editBookmark(bookmark) {
-    this.currentBookmark = bookmark;
-  }
-
-  initNewBookmark() {
-    return {
-      id: null,
-      title: '',
-      url: '',
-      category: this.CategoriesModel.getCurrentCategory().name
-    };
-  }
-
-  saveBookmark(bookmark) {
-    if (bookmark.id) {
-      this.BookmarksModel.updateBookmark(bookmark);
-    } else {
-      this.BookmarksModel.createBookmark(bookmark);
-    }
+  resetSelectedBookmark() {
+    this.store.dispatch(
+      this.BookmarksActions.resetSelectedBookmark()
+    );
   }
 
   onSave(bookmark) {
     this.saveBookmark(bookmark);
-    this.reset();
+    this.resetSelectedBookmark();
   }
 
-  reset() {
-    this.currentBookmark = null;
-  }
 }
 
-BookmarksController.$inject = ['$ngRedux', 'BookmarksModel', 'BookmarksActions'];
+BookmarksController.$inject = ['$ngRedux', 'BookmarksActions'];
 
 const BookmarksComponent = {
   template,

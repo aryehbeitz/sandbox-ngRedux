@@ -3,20 +3,41 @@
 //------------------------------------------------------------
 
 export const GET_BOOKMARKS = "GET_BOOKMARKS";
+export const GET_SELECTED_BOOKMARK = "GET_SELECTED_BOOKMARK";
+export const RESET_SELECTED_BOOKMARK = "RESET_SELECTED_BOOKMARK";
+
 
 //------------------------------------------------------------
 // Actions
 //------------------------------------------------------------
 
-export const BookmarksActions = () => {
+export const BookmarksActions = ($ngRedux) => {
+  'ngInject';
+
   const getBookmarks = bookmarks => {
     return {type: GET_BOOKMARKS, payload: bookmarks};
   };
 
+  const selectBookmark = (bookmark = initialBookmark) => {
+    const { category } = $ngRedux.getState(),
+      payload = bookmark.id ? bookmark
+        : Object.assign({}, bookmark, { category: category.name});
+
+    return {type: GET_SELECTED_BOOKMARK, payload};
+  }
+
+  const resetSelectedBookmark = () => {
+    return {type: RESET_SELECTED_BOOKMARK};
+  }
+
   return {
-    getBookmarks
+    getBookmarks,
+    resetSelectedBookmark,
+    selectBookmark
   };
 };
+
+BookmarksActions.$inject = ['$ngRedux'];
 
 //------------------------------------------------------------
 // Reducers
@@ -34,6 +55,19 @@ export const bookmarks = (state = initialBookmarks, {type, payload}) => {
   switch (type) {
     case GET_BOOKMARKS:
       return payload || state;
+    default:
+      return state;
+  }
+};
+
+const initialBookmark = {"id": null, "title": "", "url": "", "category": null }
+
+export const bookmark = (state = initialBookmark, {type, payload}) => {
+  switch (type) {
+    case GET_SELECTED_BOOKMARK:
+      return payload || state;
+    case RESET_SELECTED_BOOKMARK:
+      return initialBookmark;
     default:
       return state;
   }
