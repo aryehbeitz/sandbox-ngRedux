@@ -7,12 +7,15 @@ import template from './categories.html';
 import './categories.css';
 
 class CategoriesController {
-  constructor(CategoriesModel) {
+  constructor(store) {
     'ngInject';
+
+    this.store = store;
   }
 
   $onInit() {
-    this.categories = categories (undefined, {type: GET_CATEGORIES});
+    this.store.dispatch({type: GET_CATEGORIES}); // state setter
+    this.categories = this.store.getState; //state getter
   }
 
   onCategorySelected(currentCategory) {
@@ -26,7 +29,7 @@ class CategoriesController {
       this.currentCategory.id === category.id;
   }
 }
-CategoriesController.$inject = ['CategoriesModel'];
+CategoriesController.$inject = ['store'];
 const CategoriesComponent = {
   template,
   controller: CategoriesController,
