@@ -1,6 +1,8 @@
 import angular from 'angular';
 import CategoryItemModule from './category-item/category-item';
 
+import { categories, GET_CATEGORIES} from './categories.state.js';
+
 import template from './categories.html';
 import './categories.css';
 
@@ -12,8 +14,7 @@ class CategoriesController {
   }
 
   $onInit() {
-    this.CategoriesModel.getCategories()
-      .then(result => this.categories = result);
+    this.categories = categories (undefined, {type: GET_CATEGORIES});
   }
 
   onCategorySelected(category) {
