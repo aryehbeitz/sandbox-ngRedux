@@ -1,0 +1,11 @@
+<span class="logo" ng-click="categoriesListCtrl.onCategorySelected(null)">
+</span>
+<ul class="nav nav-sidebar">
+	<li class="category-item" ng-class="{'active':categoriesListCtrl.isCurrentCategory(category)}"
+		ng-repeat="category in categoriesListCtrl.categories">
+		<category-item
+			category="category"
+			selected="categoriesListCtrl.onCategorySelected(category)">
+		</category-item>
+	</li>
+</ul>

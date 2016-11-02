@@ -1,0 +1,1 @@
+import appModule from './app/app';
