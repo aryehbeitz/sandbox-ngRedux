@@ -1,28 +1,29 @@
 import angular from 'angular';
 import SaveBookmarksModule from './save-bookmark/save-bookmark';
 
+import { BookmarksActions } from './bookmarks.state';
+
 import template from './bookmarks.html';
 import './bookmarks.css';
 
 class BookmarksController {
-  constructor($ngRedux, BookmarksModel) {
+  constructor($ngRedux, BookmarksModel, BookmarksActions) {
     'ngInject';
 
     this.store = $ngRedux;
+    this.BookmarksActions = BookmarksActions;
     this.BookmarksModel = BookmarksModel;
   }
 
   $onInit() {
-    this.BookmarksModel.getBookmarks()
-      .then(result => this.bookmarks = result);
-
     this.deleteBookmark = this.BookmarksModel.deleteBookmark;
 
     this.store.subscribe(() => {
+      this.bookmarks = this.store.getState().bookmarks;
       this.currentCategory = this.store.getState().category;
     });
 
-    this.reset();
+    this.store.dispatch(this.BookmarksActions.getBookmarks());
   }
 
   createBookmark() {
@@ -60,7 +61,7 @@ class BookmarksController {
   }
 }
 
-BookmarksController.$inject = ['$ngRedux', 'BookmarksModel'];
+BookmarksController.$inject = ['$ngRedux', 'BookmarksModel', 'BookmarksActions'];
 
 const BookmarksComponent = {
   template,
@@ -71,6 +72,7 @@ const BookmarksComponent = {
 const BookmarksModule = angular.module('bookmarks', [
     SaveBookmarksModule.name
   ])
+  .factory('BookmarksActions', BookmarksActions)
   .component('bookmarks', BookmarksComponent);
 
 export default BookmarksModule;
