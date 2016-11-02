@@ -17,16 +17,18 @@ class CategoriesController {
   $onInit() {
     //state getter
     this.store.subscribe(() => {
-      this.categories = this.store.getState();
+      this.categories = this.store.getState().categories;
+      this.currentCategory = this.store.getState().category;
     });
     // state setter
     this.store.dispatch(
       this.CategoriesActions.getCategories());
   }
 
-  onCategorySelected(currentCategory) {
-    this.currentCategory = category (this.currentCategory,
-      this.CategoriesActions.selectCategory(currentCategory));
+  onCategorySelected(category) {
+    this.store.dispatch(
+      this.CategoriesActions.selectCategory(category)
+    );
   }
 
   isCurrentCategory(category) {

@@ -1,4 +1,6 @@
+
 <ul class="nav nav-sidebar">
+	<li class="category-item" ng-click="categoriesListCtrl.onCategorySelected(null)">Reset filter</li>
 	<li class="category-item" ng-class="{'active':categoriesListCtrl.isCurrentCategory(category)}"
 		ng-repeat="category in categoriesListCtrl.categories">
 		<category-item
