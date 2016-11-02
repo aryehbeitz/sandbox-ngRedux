@@ -14,10 +14,12 @@ class CategoriesController {
   }
 
   $onInit() {
+    //state getter
+    this.store.subscribe(() => {
+      this.categories = this.store.getState();
+    });
     // state setter
     this.store.dispatch({type: GET_CATEGORIES});
-    //state getter
-    this.categories = this.store.getState();
   }
 
   onCategorySelected(currentCategory) {
