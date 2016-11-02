@@ -6,14 +6,19 @@ import angular from 'angular';
 import CommonModule from './common/common';
 import ComponentsModule from './components/components';
 
-import Store from './app.store';
+import ngRedux from 'ng-redux';
 import { categories, initialCategories} from './components/categories/categories.state.js';
 
 
 import template from './app.html';
 import './app.css';
 
-const store = new Store (categories, initialCategories);
+const config = $ngReduxProvider => {
+  'ngInject';
+
+  $ngReduxProvider.createStoreWith(categories, [], [], initialCategories);
+};
+config.$inject = ['$ngReduxProvider'];
 
 const AppComponent = {
   template
@@ -21,10 +26,11 @@ const AppComponent = {
 
 let appModule = angular.module('app', [
     CommonModule.name,
-    ComponentsModule.name
+    ComponentsModule.name,
+    ngRedux
   ])
   .component('app', AppComponent)
-  .value('store', store)
+  .config(config)
 ;
 
 export default appModule;

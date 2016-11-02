@@ -7,10 +7,10 @@ import template from './categories.html';
 import './categories.css';
 
 class CategoriesController {
-  constructor(store, CategoriesActions) {
+  constructor($ngRedux, CategoriesActions) {
     'ngInject';
 
-    this.store = store;
+    this.store = $ngRedux;
     this.CategoriesActions = CategoriesActions;
   }
 
@@ -34,7 +34,7 @@ class CategoriesController {
       this.currentCategory.id === category.id;
   }
 }
-CategoriesController.$inject = ['store', 'CategoriesActions'];
+CategoriesController.$inject = ['$ngRedux', 'CategoriesActions'];
 const CategoriesComponent = {
   template,
   controller: CategoriesController,
