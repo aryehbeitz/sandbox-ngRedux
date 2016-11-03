@@ -16,11 +16,28 @@ export const DELETE_BOOKMARK = "DELETE_BOOKMARK";
 // Actions
 //------------------------------------------------------------
 
-export const BookmarksActions = ($ngRedux) => {
+const URLS = {
+  FETCH: 'data/bookmarks.json'
+};
+
+export const BookmarksActions = ($ngRedux, $http, $q) => {
   'ngInject';
 
-  const getBookmarks = bookmarks => {
-    return {type: GET_BOOKMARKS, payload: bookmarks};
+  const extract = result => result.data;
+
+  const getBookmarks = () => {
+    return (dispatch, getState) => {
+      const { bookmarks } = getState();
+
+      if (bookmarks.length) {
+        return $q.when(bookmarks)
+          .then(() => dispatch({ type: GET_BOOKMARKS, payload: bookmarks}));
+      } else {
+        return $http.get(URLS.FETCH)
+          .then(extract)
+            .then((data) => dispatch({ type: GET_BOOKMARKS, payload: data}));
+      }
+    };
   };
 
   const selectBookmark = (bookmark = initialBookmark) => {
@@ -57,21 +74,13 @@ export const BookmarksActions = ($ngRedux) => {
   };
 };
 
-BookmarksActions.$inject = ['$ngRedux'];
+BookmarksActions.$inject = ['$ngRedux', '$http', '$q'];
 
 //------------------------------------------------------------
 // Reducers
 //------------------------------------------------------------
 
-
-const initialBookmarks = [
-    {"id":1, "title": "Остров Сокровищ", "url": "https://www.youtube.com/watch?v=O9J1INLXJNY", "category": "Adventure" },
-    {"id":2, "title": "Matrix", "url": "http://www.imdb.com/title/tt0133093/", "category": "Sci-fi" },
-    {"id":3, "title": "Saw", "url": "http://www.imdb.com/title/tt0387564/?ref_=nv_sr_1", "category": "Thriller" },
-    {"id":4, "title": "Ace Ventura", "url": "http://www.imdb.com/title/tt0109040/?ref_=nv_sr_2", "category": "Comedy" }
-];
-
-export const bookmarks = (state = initialBookmarks, {type, payload}) => {
+export const bookmarks = (state = [], {type, payload}) => {
   switch (type) {
     case GET_BOOKMARKS:
       return payload || state;
