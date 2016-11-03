@@ -26,9 +26,9 @@ export const BookmarksActions = ($ngRedux) => {
   const selectBookmark = (bookmark = initialBookmark) => {
     const { category } = $ngRedux.getState(),
       payload = bookmark.id ? bookmark
-        : Object.assign({}, bookmark, { category: category.name});
+        : Object.assign({}, bookmark, { category: category.name });
 
-    return {type: GET_SELECTED_BOOKMARK, payload};
+    return { type: GET_SELECTED_BOOKMARK, payload };
   };
 
   const resetSelectedBookmark = () => {
