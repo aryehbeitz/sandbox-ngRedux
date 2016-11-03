@@ -13,8 +13,39 @@ import ngRedux from 'ng-redux';
 import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
+import React, { Component } from 'react';
+import ReactDom from 'react-dom';
+import { createDevTools } from 'redux-devtools';
+import LogMonitor from 'redux-devtools-log-monitor';
+import DockMonitor from 'redux-devtools-dock-monitor';
+
 import template from './app.html';
 import './app.css';
+
+const DevTools =createDevTools(
+  <DockMonitor toggleVisibilityKey='ctrl-h'
+    changePositionKey = 'ctrl-j'
+    defaultVisibility = {false}>
+      <LogMonitor theme='tomorrow' />
+  </DockMonitor>
+);
+
+const run = ($ngRedux, $rootScope) => {
+  'ngInject';
+
+  const componentDidUpdate = DockMonitor.prototype.componentDidUpdate;
+
+  DockMonitor.prototype.componentDidUpdate = () => {
+    $rootScope.$evalAsync();
+
+    if(componentDidUpdate) {
+      componentDidUpdate.apply(this, arguments);
+    }
+  };
+
+  ReactDom.render(<DevTools store={$ngRedux} />, document.getElementById('devTools'));
+}
+run.$inject = ['$ngRedux', '$rootScope'];
 
 const rootReducer = combineReducers({
   categories,
@@ -26,7 +57,7 @@ const rootReducer = combineReducers({
 const config = $ngReduxProvider => {
   'ngInject';
 
-  $ngReduxProvider.createStoreWith(rootReducer, [thunk]);
+  $ngReduxProvider.createStoreWith(rootReducer, [thunk], [DevTools.instrument()]);
 };
 config.$inject = ['$ngReduxProvider'];
 
@@ -41,6 +72,7 @@ let appModule = angular.module('app', [
   ])
   .component('app', AppComponent)
   .config(config)
+  .run(run)
 ;
 
 export default appModule;

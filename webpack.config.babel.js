@@ -19,10 +19,7 @@ export default {
     {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: 'babel',
-      query: {
-          presets: ['es2015']
-        }
+      loader: 'babel'
       },
       {
         test: /\.html$/,
